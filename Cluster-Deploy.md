@@ -37,9 +37,10 @@ yum install dhcp-server -y
 ```
 
 ```bash
+cat > /etc/dhcp/dhcpd.conf <<EOF
 option space PXE;
 option arch code 93 = unsigned integer 16; # RFC4578
-subnet 172.16.0.0 netmask 255.255.0.0 {
+subnet 172.16.50.0 netmask 255.255.255.0 {
   range 172.16.50.201 172.16.50.254;
   option routers 172.16.50.254;
   option domain-name-servers 172.16.50.200;
@@ -88,7 +89,8 @@ host compute1 {
   hardware ethernet 00:50:56:94:fd:5a;
   fixed-address 172.16.50.206;
   server-name "compute1.cluster1.xiaohui.cn";
-}
+} 
+EOF
 ```
 
 ```bash
