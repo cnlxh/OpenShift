@@ -720,6 +720,10 @@ LABEL compute1
 EOF
 ```
 
+```bash
+chmod a+rx /var/lib/tftpboot -R
+```
+
 UEFI 启动：
 
 ```bash
@@ -751,6 +755,10 @@ set timeout=10
 }
 
 EOF
+```
+
+```bash
+chmod a+rx /var/lib/tftpboot -R
 ```
 
 RedHat版本：
@@ -798,6 +806,10 @@ LABEL compute1
 EOF
 ```
 
+```bash
+chmod a+rx /var/lib/tftpboot -R
+```
+
 UEFI 启动：
 
 ```bash
@@ -829,6 +841,10 @@ set timeout=10
 }
 
 EOF
+```
+
+```bash
+chmod a+rx /var/lib/tftpboot -R
 ```
 
 # 等待Master节点bootstrap完成
