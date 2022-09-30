@@ -87,8 +87,6 @@ host compute1 {
   fixed-address 172.16.50.206;
   server-name "compute1.cluster1.xiaohui.cn";
 }
-
-
 ```
 
 ```bash
@@ -748,7 +746,7 @@ set timeout=10
   initrdefi fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img
 }
   menuentry 'compute1' {
-  linuxefi fedora-coreos-36.20220906.3.2-live-kernel-x86_64 coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/bootstrap.ign ip=172.16.50.206::172.16.50.254:255.255.255.0:compute1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+  linuxefi fedora-coreos-36.20220906.3.2-live-kernel-x86_64 coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/worker.ign ip=172.16.50.206::172.16.50.254:255.255.255.0:compute1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
   initrdefi fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img
 }
 
