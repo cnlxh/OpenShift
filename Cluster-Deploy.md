@@ -726,6 +726,7 @@ EOF
 ```
 
 ```bash
+restorecon -RvF /var/lib/tftpboot/
 chmod a+rx /var/lib/tftpboot -R
 ```
 
@@ -763,6 +764,7 @@ EOF
 ```
 
 ```bash
+restorecon -RvF /var/lib/tftpboot/
 chmod a+rx /var/lib/tftpboot -R
 ```
 
@@ -812,6 +814,7 @@ EOF
 ```
 
 ```bash
+restorecon -RvF /var/lib/tftpboot/
 chmod a+rx /var/lib/tftpboot -R
 ```
 
