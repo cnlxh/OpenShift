@@ -355,6 +355,7 @@ yum install podman jq -y
 wget https://developers.redhat.com/content-gateway/rest/mirror/pub/openshift-v4/clients/mirror-registry/latest/mirror-registry.tar.gz
 tar Cvxf /usr/local/bin mirror-registry.tar.gz
 cat /root/.ssh/id_ed25519.pub >> .ssh/authorized_keys
+ssh-copy-id root@content.cluster1.xiaohui.cn
 mirror-registry install --initPassword lixiaohui --initUser admin \
 --quayHostname content.cluster1.xiaohui.cn --quayRoot /data \
 --ssh-key /root/.ssh/id_ed25519 --sslCert /etc/pki/tls/certs/xiaohui.cn.crt \
