@@ -325,6 +325,8 @@ ssh-add /root/.ssh/id_ed25519
 
 # 配置私有仓库(此步骤可选)
 
+如果你的环境可以直接连接互联网，就不需要做这一步
+
 请自行生成这里所需的证书，可参考[证书签发](https://gitee.com/cnlxh/openshift/blob/master/Create-a-SANs-Certificate.md)
 
 1. 用户名：admin
@@ -338,7 +340,7 @@ mkdir /data
 yum install podman -y
 wget https://developers.redhat.com/content-gateway/rest/mirror/pub/openshift-v4/clients/mirror-registry/latest/mirror-registry.tar.gz
 tar Cvxf /usr/local/bin mirror-registry.tar.gz
-cat .ssh/id_rda.pub >> .ssh/authorized_keys
+cat /root/.ssh/id_ed25519.pub >> .ssh/authorized_keys
 mirror-registry install --initPassword lixiaohui --initUser admin \
 --quayHostname content.cluster1.xiaohui.cn --quayRoot /data \
 --ssh-key /root/.ssh/id_ed25519 --sslCert /etc/pki/tls/certs/xiaohui.cn.crt \
@@ -424,8 +426,10 @@ cat /root/pull-secret.txt | jq . | tee /root/remote.txt
 重新把secret合并为一行，把出现的内容全部拷贝，用于下面配置文件的pullSecret部分，官方的secret隐私原因我删除了一部分
 
 ```bash
-cat /root/remote.txt | jq -c
+cat /root/remote.txt | jq -c > secret
 ```
+
+OKD版本：
 
 关于OCP_RELEASE版本，请参考[OpenShift OKD Release](https://quay.io/repository/openshift/okd?tab=tags)
 
@@ -434,9 +438,23 @@ export OCP_RELEASE='4.11.0-0.okd'
 export LOCAL_REGISTRY='content.cluster1.xiaohui.cn:8443' 
 export LOCAL_REPOSITORY='openshift' 
 export PRODUCT_REPO='openshift' 
-export LOCAL_SECRET_JSON='/root/remote.txt' 
+export LOCAL_SECRET_JSON='/root/secret' 
 export RELEASE_NAME='okd'
 export ARCHITECTURE='2022-08-20-022919'
+```
+
+RedHat 版本：
+
+关于openshift版本，请参考[OpenShift](https://quay.io/openshift-release-dev/ocp-release)
+
+```bash
+export OCP_RELEASE='4.11.5'
+export LOCAL_REGISTRY='content.cluster1.xiaohui.cn:8443' 
+export LOCAL_REPOSITORY='openshift'
+export PRODUCT_REPO='openshift-release-dev'
+export LOCAL_SECRET_JSON='/root/secret'
+export RELEASE_NAME='ocp-release'
+export ARCHITECTURE='x86_64'
 ```
 
 将镜像上传到私有仓库
@@ -492,6 +510,10 @@ spec:
 oc adm -a ${LOCAL_SECRET_JSON} release extract \
 --command=openshift-install "${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE}-${ARCHITECTURE}" \
 --skip-verification=true --insecure=true
+```
+
+```bash
+mv openshift-install /usr/local/bin
 ```
 
 # 下载安装资料
