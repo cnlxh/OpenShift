@@ -20,7 +20,7 @@ yum install gitlab-ce -y
 
 # 配置Gitlab
 
-配置访问域名
+配置访问域名，本内容大约在32行左右
 
 ```bash
 vim /etc/gitlab/gitlab.rb
@@ -58,8 +58,6 @@ firewall-cmd --reload
 配置完成之后，就可以打开页面进行工作了
 
 登录后，点击New Project---Create blank project，输入project name，在Project URL中，选择合适的namespace，例如root，并输入project slug，选择可见级别，我这里选择了public，并点击Create Project
-
-
 
 # 克隆仓库到本地
 
@@ -108,7 +106,6 @@ Untracked files:
         index.html
 
 nothing added to commit but untracked files present (use "git add" to track)
-
 ```
 
 添加文件到暂存区，注意git add 后面有一个英文句号，表示当前路径，你可以直接用文件名代替这个句号，再次查询，我们已经有一个新文件在暂存区，不合适还可以执行它建议的命令从暂存区删除
@@ -123,7 +120,6 @@ No commits yet
 Changes to be committed:
   (use "git rm --cached <file>..." to unstage)
         new file:   index.html
-
 ```
 
 将本地工作树提交到本地仓库
@@ -144,7 +140,4 @@ Writing objects: 100% (3/3), 233 bytes | 233.00 KiB/s, done.
 Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
 To http://content.cluster1.xiaohui.cn:5000/root/openshift.git
  * [new branch]      main -> main
-
 ```
-
-
