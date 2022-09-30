@@ -351,7 +351,7 @@ ssh-add /root/.ssh/id_ed25519
 
 ```bash
 mkdir /data
-yum install podman -y
+yum install podman jq -y
 wget https://developers.redhat.com/content-gateway/rest/mirror/pub/openshift-v4/clients/mirror-registry/latest/mirror-registry.tar.gz
 tar Cvxf /usr/local/bin mirror-registry.tar.gz
 cat /root/.ssh/id_ed25519.pub >> .ssh/authorized_keys
