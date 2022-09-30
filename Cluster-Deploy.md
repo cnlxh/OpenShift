@@ -1,12 +1,12 @@
-| 角色                      | IP            | 主机名                           | CPU   | 内存  |
-| ----------------------- | ------------- | ----------------------------- | ----- | --- |
-| NTP\|DNS\|HAProxy\|TFTP | 172.16.50.200 | content.cluster1.xiaohui.cn   | 4-8核心 | 8G  |
-| bootstrap               | 172.16.50.201 | bootstrap.cluster1.xiaohui.cn | 4-8核心 | 16G |
-| master                  | 172.16.50.202 | master1.cluster1.xiaohui.cn   | 4-8核心 | 16G |
-| master                  | 172.16.50.203 | master1.cluster1.xiaohui.cn   | 4-8核心 | 16G |
-| master                  | 172.16.50.204 | master2.cluster1.xiaohui.cn   | 4-8核心 | 16G |
-| compute0                | 172.16.50.205 | compute0.cluster1.xiaohui.cn  | 4-8核心 | 16G |
-| compute1                | 172.16.50.206 | compute1.cluster1.xiaohui.cn  | 4-8核心 | 16G |
+| 角色                      | IP            | 主机名                           | CPU   | 内存  | 操作系统       |
+| ----------------------- | ------------- | ----------------------------- | ----- | --- | ---------- |
+| NTP\|DNS\|HAProxy\|TFTP | 172.16.50.200 | content.cluster1.xiaohui.cn   | 4-8核心 | 8G  | CentOS 8.5 |
+| bootstrap               | 172.16.50.201 | bootstrap.cluster1.xiaohui.cn | 4-8核心 | 16G |            |
+| master                  | 172.16.50.202 | master1.cluster1.xiaohui.cn   | 4-8核心 | 16G |            |
+| master                  | 172.16.50.203 | master1.cluster1.xiaohui.cn   | 4-8核心 | 16G |            |
+| master                  | 172.16.50.204 | master2.cluster1.xiaohui.cn   | 4-8核心 | 16G |            |
+| compute0                | 172.16.50.205 | compute0.cluster1.xiaohui.cn  | 4-8核心 | 16G |            |
+| compute1                | 172.16.50.206 | compute1.cluster1.xiaohui.cn  | 4-8核心 | 16G |            |
 
 ```textile
 作者：李晓辉
@@ -28,7 +28,9 @@
 
 4. 对外提供的网关为172.16.50.254
 
-5. 客户端拿到上述网络信息后，以TFTP协议连接的地址为172.16.50.200，去拿pxelinux.0或grubx64.efi引导文件
+5. 根据DHCP客户端提供的厂商类别识别代码来判断应该用bios还是uefi提供服务
+
+6. 客户端拿到上述网络信息后，以TFTP协议连接的地址为172.16.50.200，去拿pxelinux.0或grubx64.efi引导文件
 
 ```bash
 yum install dhcp-server -y
@@ -671,7 +673,7 @@ systemctl restart httpd
 
 # 准备PXE文件
 
-将pxelinux.0、live、kernel、initramfs、rootfs等资料复制到tftp供客户端拿取，以及创建pxe所需的引导配置文件目录
+将pxelinux.0、grubx64.efi、kernel、initramfs等资料复制到tftp供客户端拿取，以及创建pxe所需的引导配置文件和目录
 
 OKD版本：
 
@@ -684,7 +686,7 @@ cp /opt/isolinux/* /var/lib/tftpboot
 cp /boot/efi/EFI/centos/grubx64.efi /var/lib/tftpboot/
 ```
 
-BIOS 启动
+BIOS 启动：
 
 在这一步创建了6个标签，请根据实际情况，修改链接
 
