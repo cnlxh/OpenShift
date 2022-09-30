@@ -498,7 +498,6 @@ spec:
   - mirrors:
     - content.cluster1.xiaohui.cn:8443/openshift
     source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
-
 ```
 
 生成匹配版本的openshift-install文件，如果不做这个步骤，而用官方的openshift-install生成配置文件，将无法从私有仓库拉取
@@ -684,27 +683,27 @@ PROMPT 0
 LABEL bootstrap
     menu label bootstrap
     KERNEL fedora-coreos-36.20220906.3.2-live-kernel-x86_64
-    APPEND initrd=fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/bootstrap.ign ip=172.16.50.201::172.16.0.1:255.255.0.0:bootstrap.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+    APPEND initrd=fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/bootstrap.ign ip=172.16.50.201::172.16.50.254:255.255.255.0:bootstrap.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
 LABEL master0
     menu label master0
     KERNEL fedora-coreos-36.20220906.3.2-live-kernel-x86_64
-    APPEND initrd=fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.202::172.16.0.1:255.255.0.0:master0.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+    APPEND initrd=fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.202::172.16.50.254:255.255.255.0:master0.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
 LABEL master1
     menu label master1
     KERNEL fedora-coreos-36.20220906.3.2-live-kernel-x86_64
-    APPEND initrd=fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.203::172.16.0.1:255.255.0.0:master1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+    APPEND initrd=fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.203::172.16.50.254:255.255.255.0:master1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
 LABEL master2
     menu label master2
     KERNEL fedora-coreos-36.20220906.3.2-live-kernel-x86_64
-    APPEND initrd=fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.204::172.16.0.1:255.255.0.0:master2.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+    APPEND initrd=fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.204::172.16.50.254:255.255.255.0:master2.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
 LABEL compute0
     menu label compute0
     KERNEL fedora-coreos-36.20220906.3.2-live-kernel-x86_64
-    APPEND initrd=fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/worker.ign ip=172.16.50.205::172.16.0.1:255.255.0.0:compute0.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+    APPEND initrd=fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/worker.ign ip=172.16.50.205::172.16.50.254:255.255.255.0:compute0.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
 LABEL compute1
     menu label compute1
     KERNEL fedora-coreos-36.20220906.3.2-live-kernel-x86_64
-    APPEND initrd=fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/worker.ign ip=172.16.50.206::172.16.0.1:255.255.0.0:compute1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+    APPEND initrd=fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/worker.ign ip=172.16.50.206::172.16.50.254:255.255.255.0:compute1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
 EOF
 ```
 
@@ -726,27 +725,27 @@ PROMPT 0
 LABEL bootstrap
     menu label bootstrap
     KERNEL rhcos-live-kernel-x86_64
-    APPEND initrd=rhcos-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/bootstrap.ign ip=172.16.50.201::172.16.0.1:255.255.0.0:bootstrap.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+    APPEND initrd=rhcos-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/bootstrap.ign ip=172.16.50.201::172.16.50.254:255.255.255.0:bootstrap.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
 LABEL master0
     menu label master0
     KERNEL rhcos-live-kernel-x86_64
-    APPEND initrd=rhcos-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.202::172.16.0.1:255.255.0.0:master0.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+    APPEND initrd=rhcos-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.202::172.16.50.254:255.255.255.0:master0.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
 LABEL master1
     menu label master1
     KERNEL rhcos-live-kernel-x86_64
-    APPEND initrd=rhcos-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.203::172.16.0.1:255.255.0.0:master1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+    APPEND initrd=rhcos-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.203::172.16.50.254:255.255.255.0:master1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
 LABEL master2
     menu label master2
     KERNEL rhcos-live-kernel-x86_64
-    APPEND initrd=rhcos-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.204::172.16.0.1:255.255.0.0:master2.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+    APPEND initrd=rhcos-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.204::172.16.50.254:255.255.255.0:master2.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
 LABEL compute0
     menu label compute0
     KERNEL rhcos-live-kernel-x86_64
-    APPEND initrd=rhcos-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/worker.ign ip=172.16.50.205::172.16.0.1:255.255.0.0:compute0.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+    APPEND initrd=rhcos-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/worker.ign ip=172.16.50.205::172.16.50.254:255.255.255.0:compute0.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
 LABEL compute1
     menu label compute1
     KERNEL rhcos-live-kernel-x86_64
-    APPEND initrd=rhcos-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/worker.ign ip=172.16.50.206::172.16.0.1:255.255.0.0:compute1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+    APPEND initrd=rhcos-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/worker.ign ip=172.16.50.206::172.16.50.254:255.255.255.0:compute1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
 EOF
 ```
 
