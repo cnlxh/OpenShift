@@ -28,25 +28,37 @@
 
 4. 对外提供的网关为172.16.50.254
 
-5. 客户端拿到上述网络信息后，以TFTP协议连接的地址为172.16.50.200，去拿pxelinux.0引导文件
+5. 客户端拿到上述网络信息后，以TFTP协议连接的地址为172.16.50.200，去拿pxelinux.0或grubx64.efi引导文件
 
 ```bash
 yum install dhcp-server -y
 ```
 
 ```bash
-cat > /etc/dhcp/dhcpd.conf <<'EOF'
-subnet 172.16.50.0 netmask 255.255.255.0 {
+option space PXE;
+option arch code 93 = unsigned integer 16; # RFC4578
+subnet 172.16.0.0 netmask 255.255.0.0 {
   range 172.16.50.201 172.16.50.254;
   option routers 172.16.50.254;
-  next-server 172.16.50.200;
-  filename "pxelinux.0";
   option domain-name-servers 172.16.50.200;
   default-lease-time 600;
   max-lease-time 7200;
+class "pxeclients" {
+  match if substring (option vendor-class-identifier, 0, 9) = "PXEClient";
+  next-server 172.16.50.200;
+  if option arch = 00:07 {
+      filename "grubx64.efi";
+  } else if option arch = 00:08 {
+      filename "grubx64.efi";
+  } else if option arch = 00:09 {
+      filename "grubx64.efi";
+  } else {
+      filename "pxelinux.0";
+  }
+  }
 }
 host bootstrap {
-  hardware ethernet 00:50:56:94:16:4d;
+  hardware ethernet 00:50:56:94:8a:21;
   fixed-address 172.16.50.201;
   server-name "bootstrap.cluster1.xiaohui.cn";
 }
@@ -76,7 +88,7 @@ host compute1 {
   server-name "compute1.cluster1.xiaohui.cn";
 }
 
-EOF
+
 ```
 
 ```bash
@@ -671,7 +683,10 @@ yum install syslinux -y
 cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
 mount /content/fedora-coreos-36.20220906.3.2-live.x86_64.iso /opt
 cp /opt/isolinux/* /var/lib/tftpboot
+cp /boot/efi/EFI/centos/grubx64.efi /var/lib/tftpboot/
 ```
+
+BIOS 启动
 
 在这一步创建了6个标签，请根据实际情况，修改链接
 
@@ -707,6 +722,39 @@ LABEL compute1
 EOF
 ```
 
+UEFI 启动：
+
+```bash
+cat > /var/lib/tftpboot/grub.cfg <<EOF
+set timeout=10
+  menuentry 'bootstrap' {
+  linuxefi fedora-coreos-36.20220906.3.2-live-kernel-x86_64 coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/bootstrap.ign ip=172.16.50.201::172.16.50.254:255.255.255.0:bootstrap.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+  initrdefi fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img
+}
+  menuentry 'master0' {
+  linuxefi fedora-coreos-36.20220906.3.2-live-kernel-x86_64 coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.202::172.16.50.254:255.255.255.0:master0.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+  initrdefi fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img
+}
+  menuentry 'master1' {
+  linuxefi fedora-coreos-36.20220906.3.2-live-kernel-x86_64 coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.203::172.16.50.254:255.255.255.0:master1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+  initrdefi fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img
+}
+  menuentry 'master2' {
+  linuxefi fedora-coreos-36.20220906.3.2-live-kernel-x86_64 coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.204::172.16.50.254:255.255.255.0:master2.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+  initrdefi fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img
+}
+  menuentry 'compute0' {
+  linuxefi fedora-coreos-36.20220906.3.2-live-kernel-x86_64 coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/worker.ign ip=172.16.50.205::172.16.50.254:255.255.255.0:compute0.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+  initrdefi fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img
+}
+  menuentry 'compute1' {
+  linuxefi fedora-coreos-36.20220906.3.2-live-kernel-x86_64 coreos.live.rootfs_url=http://172.16.50.200:2000/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/bootstrap.ign ip=172.16.50.206::172.16.50.254:255.255.255.0:compute1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+  initrdefi fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img
+}
+
+EOF
+```
+
 RedHat版本：
 
 ```bash
@@ -715,7 +763,10 @@ yum install syslinux -y
 cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
 mount /content/rhcos-live.x86_64.iso /opt
 cp /opt/isolinux/* /var/lib/tftpboot
+cp /boot/efi/EFI/centos/grubx64.efi /var/lib/tftpboot/
 ```
+
+BIOS 启动：
 
 ```bash
 cat > /var/lib/tftpboot/pxelinux.cfg/default <<EOF
@@ -746,6 +797,39 @@ LABEL compute1
     menu label compute1
     KERNEL rhcos-live-kernel-x86_64
     APPEND initrd=rhcos-live-initramfs.x86_64.img coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/worker.ign ip=172.16.50.206::172.16.50.254:255.255.255.0:compute1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+EOF
+```
+
+UEFI 启动：
+
+```bash
+cat > /var/lib/tftpboot/grub.cfg <<EOF
+set timeout=10
+  menuentry 'bootstrap' {
+  linuxefi rhcos-live-kernel-x86_64 coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/bootstrap.ign ip=172.16.50.201::172.16.50.254:255.255.255.0:bootstrap.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+  initrdefi rhcos-live-initramfs.x86_64.img
+}
+  menuentry 'master0' {
+  linuxefi rhcos-live-kernel-x86_64 coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.202::172.16.50.254:255.255.255.0:master0.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+  initrdefi rhcos-live-initramfs.x86_64.img
+}
+  menuentry 'master1' {
+  linuxefi rhcos-live-kernel-x86_64 coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.203::172.16.50.254:255.255.255.0:master1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+  initrdefi rhcos-live-initramfs.x86_64.img
+}
+  menuentry 'master2' {
+  linuxefi rhcos-live-kernel-x86_64 coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/master.ign ip=172.16.50.204::172.16.50.254:255.255.255.0:master2.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+  initrdefi rhcos-live-initramfs.x86_64.img
+}
+  menuentry 'compute0' {
+  linuxefi rhcos-live-kernel-x86_64 coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/worker.ign ip=172.16.50.205::172.16.50.254:255.255.255.0:compute0.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+  initrdefi rhcos-live-initramfs.x86_64.img
+}
+  menuentry 'compute1' {
+  linuxefi rhcos-live-kernel-x86_64 coreos.live.rootfs_url=http://172.16.50.200:2000/rhcos-live-rootfs.x86_64.img coreos.inst.install_dev=/dev/sda coreos.inst.ignition_url=http://172.16.50.200:2000/bootstrap.ign ip=172.16.50.206::172.16.50.254:255.255.255.0:compute1.cluster1.xiaohui.cn:ens192:none nameserver=172.16.50.200
+  initrdefi rhcos-live-initramfs.x86_64.img
+}
+
 EOF
 ```
 
