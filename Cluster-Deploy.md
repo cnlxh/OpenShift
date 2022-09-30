@@ -337,6 +337,38 @@ eval "$(ssh-agent -s)"
 ssh-add /root/.ssh/id_ed25519
 ```
 
+# 下载安装资料
+
+这里采用了最新的稳定版，并在/content和/var/lib/tftpboot/中下载了coreos安装过程中的live、kernel、initramfs、rootfs等资料备用，以下不同版本自己选一个即可
+
+OKD版本：
+
+```bash
+mkdir /content
+wget -O /content/openshift-install-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz https://github.com/okd-project/okd/releases/download/4.11.0-0.okd-2022-08-20-022919/openshift-install-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz
+wget -O /content/openshift-client-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz https://github.com/okd-project/okd/releases/download/4.11.0-0.okd-2022-08-20-022919/openshift-client-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz
+tar Cxvf /usr/local/bin/ /content/openshift-install-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz
+tar Cxvf /usr/local/bin/ /content/openshift-client-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz
+wget -O /var/lib/tftpboot/fedora-coreos-36.20220906.3.2-live-kernel-x86_64 https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/36.20220906.3.2/x86_64/fedora-coreos-36.20220906.3.2-live-kernel-x86_64
+wget -O /var/lib/tftpboot/fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/36.20220906.3.2/x86_64/fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img
+wget -O /content/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/36.20220906.3.2/x86_64/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img
+wget -O /content/fedora-coreos-36.20220906.3.2-live.x86_64.iso https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/36.20220906.3.2/x86_64/fedora-coreos-36.20220906.3.2-live.x86_64.iso
+```
+
+RedHat 版本：
+
+```bash
+mkdir /content
+wget -O /content/openshift-install-linux.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-install-linux.tar.gz
+wget -O /content/openshift-client-linux.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz
+tar Cxvf /usr/local/bin/ /content/openshift-install-linux.tar.gz
+tar Cxvf /usr/local/bin/ /content/openshift-client-linux.tar.gz
+wget -O /content/rhcos-live.x86_64.iso https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/latest/rhcos-live.x86_64.iso
+wget -O /var/lib/tftpboot/rhcos-live-kernel-x86_64 https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/latest/rhcos-live-kernel-x86_64
+wget -O /var/lib/tftpboot/rhcos-live-initramfs.x86_64.img https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/latest/rhcos-live-initramfs.x86_64.img
+wget -O /content/rhcos-live-rootfs.x86_64.img https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/latest/rhcos-live-rootfs.x86_64.img
+```
+
 # 配置私有仓库(此步骤可选)
 
 如果你的环境可以直接连接互联网，就不需要做这一步
@@ -525,38 +557,6 @@ oc adm -a ${LOCAL_SECRET_JSON} release extract \
 
 ```bash
 mv openshift-install /usr/local/bin
-```
-
-# 下载安装资料
-
-这里采用了最新的稳定版，并在/content和/var/lib/tftpboot/中下载了coreos安装过程中的live、kernel、initramfs、rootfs等资料备用，以下不同版本自己选一个即可
-
-OKD版本：
-
-```bash
-mkdir /content
-wget -O /content/openshift-install-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz https://github.com/okd-project/okd/releases/download/4.11.0-0.okd-2022-08-20-022919/openshift-install-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz
-wget -O /content/openshift-client-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz https://github.com/okd-project/okd/releases/download/4.11.0-0.okd-2022-08-20-022919/openshift-client-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz
-tar Cxvf /usr/local/bin/ /content/openshift-install-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz
-tar Cxvf /usr/local/bin/ /content/openshift-client-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz
-wget -O /var/lib/tftpboot/fedora-coreos-36.20220906.3.2-live-kernel-x86_64 https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/36.20220906.3.2/x86_64/fedora-coreos-36.20220906.3.2-live-kernel-x86_64
-wget -O /var/lib/tftpboot/fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/36.20220906.3.2/x86_64/fedora-coreos-36.20220906.3.2-live-initramfs.x86_64.img
-wget -O /content/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/36.20220906.3.2/x86_64/fedora-coreos-36.20220906.3.2-live-rootfs.x86_64.img
-wget -O /content/fedora-coreos-36.20220906.3.2-live.x86_64.iso https://builds.coreos.fedoraproject.org/prod/streams/stable/builds/36.20220906.3.2/x86_64/fedora-coreos-36.20220906.3.2-live.x86_64.iso
-```
-
-RedHat 版本：
-
-```bash
-mkdir /content
-wget -O /content/openshift-install-linux.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-install-linux.tar.gz
-wget -O /content/openshift-client-linux.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz
-tar Cxvf /usr/local/bin/ /content/openshift-install-linux.tar.gz
-tar Cxvf /usr/local/bin/ /content/openshift-client-linux.tar.gz
-wget -O /content/rhcos-live.x86_64.iso https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/latest/rhcos-live.x86_64.iso
-wget -O /var/lib/tftpboot/rhcos-live-kernel-x86_64 https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/latest/rhcos-live-kernel-x86_64
-wget -O /var/lib/tftpboot/rhcos-live-initramfs.x86_64.img https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/latest/rhcos-live-initramfs.x86_64.img
-wget -O /content/rhcos-live-rootfs.x86_64.img https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rhcos/latest/rhcos-live-rootfs.x86_64.img
 ```
 
 # 拉取密钥
