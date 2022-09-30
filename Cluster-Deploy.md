@@ -469,21 +469,19 @@ oc adm -a ${LOCAL_SECRET_JSON} release mirror \
 注意结束之后的输出，我们把imageContentSources的内容放到稍后的install-config.yaml文件中
 
 ```textile
-Update image:  content.cluster1.xiaohui.cn:8443/openshift/okd:4.11.0-0.okd-2022-08-20-022919
+Update image:  content.cluster1.xiaohui.cn:8443/openshift:4.11.5-x86_64
 Mirror prefix: content.cluster1.xiaohui.cn:8443/openshift
-Mirror prefix: content.cluster1.xiaohui.cn:8443/openshift/okd:4.11.0-0.okd-2022-08-20-022919
+Mirror prefix: content.cluster1.xiaohui.cn:8443/openshift:4.11.5-x86_64
 
 To use the new mirrored repository to install, add the following section to the install-config.yaml:
 
 imageContentSources:
 - mirrors:
   - content.cluster1.xiaohui.cn:8443/openshift
-  - content.cluster1.xiaohui.cn:8443/openshift/okd
-  source: quay.io/openshift/okd
+  source: quay.io/openshift-release-dev/ocp-release
 - mirrors:
   - content.cluster1.xiaohui.cn:8443/openshift
-  - content.cluster1.xiaohui.cn:8443/openshift/okd
-  source: quay.io/openshift/okd-content
+  source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
 
 
 To use the new mirrored repository for upgrades, use the following to create an ImageContentSourcePolicy:
@@ -496,12 +494,11 @@ spec:
   repositoryDigestMirrors:
   - mirrors:
     - content.cluster1.xiaohui.cn:8443/openshift
-    - content.cluster1.xiaohui.cn:8443/openshift/okd
-    source: quay.io/openshift/okd
+    source: quay.io/openshift-release-dev/ocp-release
   - mirrors:
     - content.cluster1.xiaohui.cn:8443/openshift
-    - content.cluster1.xiaohui.cn:8443/openshift/okd
-    source: quay.io/openshift/okd-content
+    source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
+
 ```
 
 生成匹配版本的openshift-install文件，如果不做这个步骤，而用官方的openshift-install生成配置文件，将无法从私有仓库拉取
