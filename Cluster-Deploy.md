@@ -26,7 +26,7 @@
 
 3. 对外提供的DNS为172.25.200
 
-4. 对外提供的网关为172.16.0.1
+4. 对外提供的网关为172.16.50.254
 
 5. 客户端拿到上述网络信息后，以TFTP协议连接的地址为172.16.50.200，去拿pxelinux.0引导文件
 
@@ -38,7 +38,7 @@ yum install dhcp-server -y
 cat > /etc/dhcp/dhcpd.conf <<'EOF'
 subnet 172.16.0.0 netmask 255.255.0.0 {
   range 172.16.50.201 172.16.50.254;
-  option routers 172.16.0.1;
+  option routers 172.16.50.254;
   next-server 172.16.50.200;
   filename "pxelinux.0";
   option domain-name-servers 172.16.50.200;
@@ -515,7 +515,7 @@ mv openshift-install /usr/local/bin
 
 # 下载安装资料
 
-这里采用了最新的稳定版，并在/content中下载了coreos安装过程中的live、kernel、initramfs、rootfs等资料备用，以下不同版本自己选一个即可
+这里采用了最新的稳定版，并在/content和/var/lib/tftpboot/中下载了coreos安装过程中的live、kernel、initramfs、rootfs等资料备用，以下不同版本自己选一个即可
 
 OKD版本：
 
@@ -594,7 +594,7 @@ networking:
   serviceNetwork:
   - 192.168.0.0/16
   machineNetwork:
-  - cidr: 172.16.0.0/16
+  - cidr: 172.16.50.0/24
 platform:
   none: {}
 fips: false
@@ -603,12 +603,10 @@ sshKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGxL3I2R2omOzpdXslWUogEkG9jik0OGHR2
 imageContentSources:
 - mirrors:
   - content.cluster1.xiaohui.cn:8443/openshift
-  - content.cluster1.xiaohui.cn:8443/openshift/okd
-  source: quay.io/openshift/okd
+  source: quay.io/openshift-release-dev/ocp-release
 - mirrors:
   - content.cluster1.xiaohui.cn:8443/openshift
-  - content.cluster1.xiaohui.cn:8443/openshift/okd
-  source: quay.io/openshift/okd-content
+  source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
 additionalTrustBundle: |
   -----BEGIN CERTIFICATE-----
   MIIFrzCCA5egAwIBAgIUZBSHC378o/0vC2gYDHojyr2tpJ4wDQYJKoZIhvcNAQEN
