@@ -20,11 +20,14 @@ yum install gitlab-ce -y
 
 # 配置Gitlab
 
+```bash
+vim /etc/gitlab/gitlab.rb
+```
+
 配置访问域名，本内容大约在32行左右
 
 ```bash
-vim /etc/gitlab/gitlab.rb
-external_url http://content.cluster1.xiaohui.cn:5000
+external_url "http://content.cluster1.xiaohui.cn:5000"
 ```
 
 配置代码仓库默认存储位置，本内容大约在629行左右
