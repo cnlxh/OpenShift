@@ -19,13 +19,15 @@ oc patch configs.imageregistry.operator.openshift.io cluster \
 
 ## 创建nfs资源
 
+以下是content机器上完成创建，IP为172.16.50.200
+
 ```bash
-[root@content ~]# yum install nfs-utils -y
-[root@content ~]# mkdir /nfs
-[root@content ~]# semanage fcontext -a -t public_content_t "/nfs(/.*)?"
-[root@content ~]# restorecon -RvF /nfs/
-[root@content ~]# chmod 777 /nfs/ -R
-[root@content ~]# systemctl enable nfs-server --now
+yum install nfs-utils -y
+mkdir /nfs
+semanage fcontext -a -t public_content_t "/nfs(/.*)?"
+restorecon -RvF /nfs/
+chmod 777 /nfs/ -R
+systemctl enable nfs-server --now
 ```
 
 ```bash
@@ -55,7 +57,9 @@ spec:
     path: /nfs
     server: 172.16.50.200 
 EOF
+```
 
+```bash
 oc apply -f pv.yaml
 ```
 
@@ -64,7 +68,7 @@ oc apply -f pv.yaml
 这里的PVC其实也可以不建立，只需要在下一步的spec.storage下，将pvc的claim中保持空值，就会自动创建PVC，自己创建PVC可以定制名称等参数
 
 ```bash
-cat > pvc.yml <<EOF
+cat > pvc.yaml <<EOF
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -77,6 +81,9 @@ spec:
     requests:
       storage: 200Gi
 EOF
+```
+
+```bash
 oc apply -f pvc.yaml
 ```
 
@@ -177,7 +184,9 @@ oc delete images sha256:e2ce951141b668014b7ea85b4167c957593763227b7a121938002532
 
 # 公开Registry
 
-通过使用路由可以开放从外部访问Registry
+通过使用路由可以开放从外部访问Registry，但这个默认路由的证书以及默认名称可能会过长或不合适，如果要定制证书和域名，请使用下方的自定义route路径方法公开registry，`默认路由和自定义路由的方法选一个即可`
+
+## 默认路由
 
 如果要自动启用Image Registry默认路由，对 Image Registry Operator CRD 进行 patch 处理，然后执行oc get co，等待执行结束
 
@@ -205,36 +214,11 @@ base64 -d | sudo tee /etc/pki/ca-trust/source/anchors/${HOST}.crt  > /dev/null
 update-ca-trust
 ```
 
-使用默认路由登录
-
-```bash
-podman login -u lixiaohui -p $(oc whoami -t) $HOST
-```
-
-如果登录的时候报告如下错误
-
-```bash
-error: no token is currently in use for this session
-```
-
-登录一下ocp，然后再登录podman就可以了
-
-```bash
-oc login -u lixiaohui -p 1 https://api.cluster1.xiaohui.cn:6443
-```
-
-# 自定义route路径
+## 自定义route路径
 
 默认情况下，registry的route域名太长了，不方便，我们可以定制一下，但是这个是TLS加密的，所以我们需要重新申请证书
 
-根证书生成
-
-```bash
-openssl genrsa -out /etc/pki/tls/private/xiaohuiroot.key 4096
-openssl req -x509 -new -nodes -sha512 -days 3650 -subj "/C=CN/ST=Shanghai/L=Shanghai/O=Company/OU=SH/CN=xiaohui.cn" \
--key /etc/pki/tls/private/xiaohuiroot.key \
--out /etc/pki/ca-trust/source/anchors/xiaohuiroot.crt 
-```
+根证书生成请参考[证书签发](https://gitee.com/cnlxh/openshift/blob/master/Create-a-SANs-Certificate.md) ，建议集群中复用根证书以达到统一可信的原则
 
 生成服务器私钥以及证书请求文件
 
@@ -296,3 +280,35 @@ spec:
 ```
 
 此时我们就可以从外部通过registry.apps.cluster1.xiaohui.cn来完成image tag和image push了
+
+## 使用路由登录
+
+注意podman login 后面的域名，如果你启动的是默认路由而非自定义路由，请更替为默认路由域名
+
+```bash
+podman login -u lixiaohui -p $(oc whoami -t) registry.apps.cluster1.xiaohui.cn
+```
+
+如果登录的时候报告如下错误
+
+```bash
+error: no token is currently in use for this session
+```
+
+登录一下ocp，然后再登录podman就可以了
+
+```bash
+oc login -u lixiaohui -p 1 https://api.cluster1.xiaohui.cn:6443
+```
+
+oc login 时如果报告如下错误：
+
+```bash
+error: x509: certificate signed by unknown authority
+```
+
+重新复制kubeconfig文件就行
+
+```bash
+cp /openshift/auth/kubeconfig /root/.kube/config 
+```
