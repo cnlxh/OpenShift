@@ -395,6 +395,11 @@ mirror-registry install --initPassword lixiaohui --initUser admin \
 ```
 
 ```bash
+firewall-cmd --add-port=8443/tcp --permanent
+firewall-cmd --reload
+```
+
+```bash
 echo -n 'admin:lixiaohui' | base64 -w0
 YWRtaW46bGl4aWFvaHVp
 ```
