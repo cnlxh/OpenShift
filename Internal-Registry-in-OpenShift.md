@@ -218,7 +218,7 @@ update-ca-trust
 
 默认情况下，registry的route域名太长了，不方便，我们可以定制一下，但是这个是TLS加密的，所以我们需要重新申请证书
 
-根证书生成请参考[证书签发](https://gitee.com/cnlxh/openshift/blob/master/Create-a-SANs-Certificate.md) ，建议集群中复用根证书以达到统一可信的原则
+在证书签发处会用到根证书，根证书生成请参考[证书签发](https://gitee.com/cnlxh/openshift/blob/master/Create-a-SANs-Certificate.md) ，建议集群中复用根证书以达到统一可信的原则
 
 生成服务器私钥以及证书请求文件
 
@@ -282,6 +282,12 @@ spec:
 此时我们就可以从外部通过registry.apps.cluster1.xiaohui.cn来完成image tag和image push了
 
 ## 使用路由登录
+
+这里使用的是客户端的podman，请自行通过以下方式安装
+
+```bash
+yum install podman -y
+```
 
 注意podman login 后面的域名，如果你启动的是默认路由而非自定义路由，请更替为默认路由域名
 
