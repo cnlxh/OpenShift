@@ -18,6 +18,8 @@
 
 5. 生成我们的业务
 
+搭建内部代码仓库和内部镜像仓库过程请点击：
+
 [内部代码仓库](https://gitee.com/cnlxh/openshift/blob/master/Configure-GitLab-On-Premises.md) 
 
 [内部镜像仓库](https://gitee.com/cnlxh/openshift/blob/master/Internal-Registry-in-OpenShift.md) 
@@ -138,6 +140,61 @@ phptest   lixiaohui.apps.cluster1.xiaohui.cn          phptest    8080-tcp       
 Hello lixiaohui
 ```
 
+## 提供HTTPS服务
+
+请参阅[根证书生成](https://gitee.com/cnlxh/openshift/blob/master/Create-a-SANs-Certificate.md) 
+
+### 生成业务证书
+
+```bash
+openssl genrsa -out /etc/pki/tls/private/phptest.key 4096
+openssl req -sha512 -new \
+-subj "/C=CN/ST=Shanghai/L=Shanghai/O=Company/OU=SH/CN=xiaohui.cn" \
+-key /etc/pki/tls/private/phptest.key \
+-out phptest.csr
+```
+
+### 生成openssl cnf扩展文件
+
+```bash
+cat > certs.cnf << EOF
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = phptesthttps.apps.cluster1.xiaohui.cn 
+EOF
+```
+
+### 签发证书
+
+```bash
+openssl x509 -req -in phptest.csr \
+-CA /etc/pki/ca-trust/source/anchors/xiaohuiroot.crt \
+-CAkey /etc/pki/tls/private/xiaohuiroot.key -CAcreateserial \
+-out /etc/pki/tls/certs/phptest.crt \
+-days 3650 -extensions v3_req -extfile certs.cnf
+```
+
+### 提供HTTPS服务
+
+```bash
+[root@content ~]# oc create route edge --service=phptest --cert=/etc/pki/tls/certs/phptest.crt --key=/etc/pki/tls/private/phptest.key --hostname=phptesthttps.apps.cluster1.xiaohui.cn phptesthttps
+route.route.openshift.io/phptesthttps created
+[root@content ~]# oc get route
+NAME           HOST/PORT                               PATH   SERVICES   PORT       TERMINATION   WILDCARD
+phptest        lixiaohui.apps.cluster1.xiaohui.cn             phptest    8080-tcp                 None
+phptesthttps   phptesthttps.apps.cluster1.xiaohui.cn          phptest    8080-tcp   edge          None
+[root@content ~]# curl -k https://phptesthttps.apps.cluster1.xiaohui.cn
+Hello lixiaohui version 2
+
+```
+
 # 业务版本更新
 
 这里测试的是程序员又更新了代码，看看OpenShift重新构建业务的流程
@@ -201,8 +258,6 @@ NAME                       READY   STATUS      RESTARTS   AGE
 phptest-1-build            0/1     Completed   0          17m
 phptest-2-build            0/1     Completed   0          94s
 phptest-6b6c774b5b-g4g7w   1/1     Running     0          13s
-
-
 ```
 
 ## 访问重新构建后的应用
