@@ -286,14 +286,14 @@ frontend stats
 listen api-server-6443
   bind *:6443
   mode tcp
-  server bootstrap bootstrap.cluster1.xiaohui.cn:6443 check inter 1s backup
+  server bootstrap bootstrap.cluster1.xiaohui.cn:6443 check inter 1s
   server master0 master0.cluster1.xiaohui.cn:6443 check inter 1s
   server master1 master1.cluster1.xiaohui.cn:6443 check inter 1s
   server master2 master2.cluster1.xiaohui.cn:6443 check inter 1s
 listen machine-config-server-22623
   bind *:22623
   mode tcp
-  server bootstrap bootstrap.cluster1.xiaohui.cn:22623 check inter 1s backup
+  server bootstrap bootstrap.cluster1.xiaohui.cn:22623 check inter 1s
   server master0 master0.cluster1.xiaohui.cn:22623 check inter 1s
   server master1 master1.cluster1.xiaohui.cn:22623 check inter 1s
   server master2 master2.cluster1.xiaohui.cn:22623 check inter 1s
