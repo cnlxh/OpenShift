@@ -1,12 +1,12 @@
-| 角色                      | IP            | 主机名                           | CPU   | 内存  | 操作系统       |
-| ----------------------- | ------------- | ----------------------------- | ----- | --- | ---------- |
-| NTP\|DNS\|HAProxy\|TFTP | 172.16.50.200 | content.cluster1.xiaohui.cn   | 4-8核心 | 8G  | CentOS 8.5 |
-| bootstrap               | 172.16.50.201 | bootstrap.cluster1.xiaohui.cn | 4-8核心 | 16G |            |
-| master                  | 172.16.50.202 | master1.cluster1.xiaohui.cn   | 4-8核心 | 16G |            |
-| master                  | 172.16.50.203 | master1.cluster1.xiaohui.cn   | 4-8核心 | 16G |            |
-| master                  | 172.16.50.204 | master2.cluster1.xiaohui.cn   | 4-8核心 | 16G |            |
-| compute0                | 172.16.50.205 | compute0.cluster1.xiaohui.cn  | 4-8核心 | 16G |            |
-| compute1                | 172.16.50.206 | compute1.cluster1.xiaohui.cn  | 4-8核心 | 16G |            |
+| 角色                    | IP            | 主机名                        | CPU     | 内存 | 操作系统   |
+| ----------------------- | ------------- | ----------------------------- | ------- | ---- | ---------- |
+| NTP\|DNS\|HAProxy\|TFTP | 172.16.50.200 | content.cluster1.xiaohui.cn   | 4-8核心 | 8G   | CentOS 8.5 |
+| bootstrap               | 172.16.50.201 | bootstrap.cluster1.xiaohui.cn | 4-8核心 | 16G  |            |
+| master                  | 172.16.50.202 | master1.cluster1.xiaohui.cn   | 4-8核心 | 16G  |            |
+| master                  | 172.16.50.203 | master1.cluster1.xiaohui.cn   | 4-8核心 | 16G  |            |
+| master                  | 172.16.50.204 | master2.cluster1.xiaohui.cn   | 4-8核心 | 16G  |            |
+| compute0                | 172.16.50.205 | compute0.cluster1.xiaohui.cn  | 4-8核心 | 16G  |            |
+| compute1                | 172.16.50.206 | compute1.cluster1.xiaohui.cn  | 4-8核心 | 16G  |            |
 
 ```textile
 作者：李晓辉
@@ -21,15 +21,10 @@
 配置DHCP的主要好处就是不用在每个节点启动时手工输入一大串麻烦的网络信息以及coreos的各种参数， 直接分配固定的IP地址给节点，然后配合PXE，就可以省却手工在每台节点输入的事，非常方便，还提高了正确性
 
 1. DHCP工作在172.16.50.0/24子网中
-
 2. 对外提供的IP为172.16.50.201-172.16.50.254
-
 3. 对外提供的DNS为172.16.50.200
-
 4. 对外提供的网关为172.16.50.254
-
 5. 根据DHCP客户端提供的厂商类别识别代码来判断应该用bios还是uefi提供服务
-
 6. 客户端拿到上述网络信息后，以TFTP协议连接的地址为172.16.50.200，去拿pxelinux.0或grubx64.efi引导文件
 
 ```bash
@@ -147,15 +142,15 @@ systemctl enable httpd --now
 
 DNS条目在openshift安装过程中承担了很重要的角色，我们的域名为xiaohui.cn，集群名称预备设置为cluster1，反向记录很重要，虽然我们有DHCP绑定并分配名称，但PTR可以直接设置主机名，在后续任务中，承担非常重要的角色，例如，采用网页工具安装，发现主机页面的主机名，就是通过PTR记录获得的
 
-| DNS                           | 角色         | 功能                                    |
-| ----------------------------- | ---------- | ------------------------------------- |
-| content.cluster1.xiaohui.cn   | material   | 提供DHCP、HTTP、NTP、HTTP、DNS、TFTP、HAProxy |
-| api.cluster1.xiaohui.cn       | master api | 提供openshift master api接口，通常指向负载均衡     |
-| api-int.cluster1.xiaohui.cn   | master api | 提供api的内部通信，通常指向负载均衡                   |
-| *.apps.cluster1.xiaohui.cn    | APP        | 应用程序通配符，用于后期集群内的应用暴露，通常指向负载均衡         |
-| bootstrap.cluster1.xiaohui.cn | bootstrap  | 用于准备集群，集群就绪后可删除                       |
-| masterX.cluster1.xiaohui.cn   | master     | openshift master服务                    |
-| computeX.cluster1.xiaohui.cn  | worker     | openshift 计算节点服务                      |
+| DNS                           | 角色       | 功能                                                       |
+| ----------------------------- | ---------- | ---------------------------------------------------------- |
+| content.cluster1.xiaohui.cn   | material   | 提供DHCP、HTTP、NTP、HTTP、DNS、TFTP、HAProxy              |
+| api.cluster1.xiaohui.cn       | master api | 提供openshift master api接口，通常指向负载均衡             |
+| api-int.cluster1.xiaohui.cn   | master api | 提供api的内部通信，通常指向负载均衡                        |
+| *.apps.cluster1.xiaohui.cn    | APP        | 应用程序通配符，用于后期集群内的应用暴露，通常指向负载均衡 |
+| bootstrap.cluster1.xiaohui.cn | bootstrap  | 用于准备集群，集群就绪后可删除                             |
+| masterX.cluster1.xiaohui.cn   | master     | openshift master服务                                       |
+| computeX.cluster1.xiaohui.cn  | worker     | openshift 计算节点服务                                     |
 
 ```bash
 yum install bind bind-utils -y
@@ -286,7 +281,7 @@ frontend stats
   stats refresh 30s
   stats show-node
   stats show-desc Stats for cluster
-  stats auth admin
+  stats auth admin:admin
   stats uri /stats
 listen api-server-6443
   bind *:6443
@@ -376,9 +371,7 @@ wget -O /content/rhcos-live-rootfs.x86_64.img https://mirror.openshift.com/pub/o
 请自行生成这里所需的证书，可参考[证书签发](https://gitee.com/cnlxh/openshift/blob/master/Create-a-SANs-Certificate.md)
 
 1. 用户名：admin
-
 2. 密码：lixiaohui
-
 3. 主机名：content.cluster1.xiaohui.cn
 
 ```bash
@@ -575,13 +568,13 @@ https://console.redhat.com/openshift/install/pull-secret
 
 # 准备安装配置文件
 
-| 参数            | 值          | 意义             |
-| ------------- | ---------- | -------------- |
+| 参数          | 值         | 意义               |
+| ------------- | ---------- | ------------------ |
 | baseDomain    | xiaohui.cn | 域名后缀           |
 | metadata.name | cluster1   | 集群名称           |
 | pullSecret    | XXX        | 填写真实pullSecret |
-| sshKey        | XXX        | 填写真实ssh公钥      |
-|               |            |                |
+| sshKey        | XXX        | 填写真实ssh公钥    |
+|               |            |                    |
 
 ```bash
 mkdir /openshift
