@@ -339,7 +339,6 @@ ssh-add /root/.ssh/id_ed25519
 OKD版本：
 
 ```bash
-mkdir /content
 wget -O /content/openshift-install-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz https://github.com/okd-project/okd/releases/download/4.11.0-0.okd-2022-08-20-022919/openshift-install-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz
 wget -O /content/openshift-client-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz https://github.com/okd-project/okd/releases/download/4.11.0-0.okd-2022-08-20-022919/openshift-client-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz
 tar Cxvf /usr/local/bin/ /content/openshift-install-linux-4.11.0-0.okd-2022-08-20-022919.tar.gz
@@ -353,7 +352,6 @@ wget -O /content/fedora-coreos-36.20220906.3.2-live.x86_64.iso https://builds.co
 RedHat 版本：
 
 ```bash
-mkdir /content
 wget -O /content/openshift-install-linux.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-install-linux.tar.gz
 wget -O /content/openshift-client-linux.tar.gz https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz
 tar Cxvf /usr/local/bin/ /content/openshift-install-linux.tar.gz
