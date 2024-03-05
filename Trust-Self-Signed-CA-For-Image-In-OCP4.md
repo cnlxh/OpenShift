@@ -17,6 +17,7 @@
 
 ```bash
 ssh core@master01
+sudo -i
 ```
 
 以下所有操作都在RHCOS的OpenShift节点
