@@ -13,6 +13,14 @@
 
 本文主要解决在OpenShift 4版本中，无法从第三方外部仓库中拉取镜像的问题，无法拉取镜像的原因是QUAY是自签名证书，所以在OpenShift中不信任是正常情况，以下是解决思路和步骤：
 
+先完成RHCOS操作系统登录
+
+```bash
+ssh core@master01
+```
+
+以下所有操作都在RHCOS的OpenShift节点
+
 1. 让操作系统信任自签名CA证书
 
 我的自签名CA证书名称是：`xiaohuiroot.crt`
