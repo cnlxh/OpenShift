@@ -30,6 +30,18 @@ vim /etc/gitlab/gitlab.rb
 external_url "http://content.cluster1.xiaohui.cn:5000"
 ```
 
+配置监听IP地址
+
+```bash
+nginx['listen_addresses'] = ['192.168.51.200']
+```
+
+配置Gitlab 访问证书
+
+```bash
+nginx['ssl_certificate'] = "/etc/pki/tls/certs/git.crt"
+nginx['ssl_certificate_key'] = "/etc/pki/tls/private/xiaohui.cn.key"
+```
 配置代码仓库默认存储位置，本内容大约在629行左右
 
 ```bash
