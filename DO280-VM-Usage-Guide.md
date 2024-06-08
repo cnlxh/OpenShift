@@ -35,9 +35,9 @@ OpenShift、Quay和Gitlab的控制台书签已在student用户的浏览器就绪
 
 1.	OpenShift 服务器
 
-> 控制台URL：https://console-openshift-console.apps.ocp4.example.com
-
-> 临时登录用户名kubeadmin，密码gdtpf-qvRqf-pekZF-2vABT
+> 1. 控制台URL：https://console-openshift-console.apps.ocp4.example.com
+> 2. 临时登录用户名kubeadmin
+> 3. 密码gdtpf-qvRqf-pekZF-2vABT
 ___
 
 2.	Quay容器镜像仓库
@@ -52,9 +52,9 @@ ___
 
 > 1. URL：https://git.ocp4.example.com
 > 2. 用户名：developer
-> 3.密码: redhatocp
+> 3. 密码: redhatocp
 
-# 其他信息
+# 虚拟机账号密码信息
 
 虚拟机账号密码：
 
@@ -63,7 +63,7 @@ ___
 
 # 关于集群的开机和重启
 
-包括集群虚拟机的第一次开机以及后续的每次重启，都会生成新的客户端证书请求，如果长时间集群无法ready，可能是当次的启动证书没有自动审批。在workstation上用oc login登录OCP集群之后，执行以下命令完成证书审审批即可
+包括集群虚拟机的第一次开机以及后续的每次重启，都会生成新的客户端证书请求，如果长时间集群无法ready，可能是当次的启动证书没有自动审批。在workstation上用oc login登录OCP集群之后，执行以下命令完成证书审批即可
 
 ```bash
 oc get csr -o name | xargs oc adm certificate approve
