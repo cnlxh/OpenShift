@@ -42,7 +42,7 @@ ___
 
 2.	Quay容器镜像仓库
 
-> 1.URL：https://registry.ocp4.example.com:8443
+> 1. URL：https://registry.ocp4.example.com:8443
 > 2. 用户名：admin
 > 3. 密码: redhatocp
 ___
