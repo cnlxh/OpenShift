@@ -42,10 +42,9 @@ ___
 
 2.	Quay容器镜像仓库
 
-URL：https://registry.ocp4.example.com:8443
-
-> 1. 用户名：admin
-> 2. 密码: redhatocp
+> 1.URL：https://registry.ocp4.example.com:8443
+> 2. 用户名：admin
+> 3. 密码: redhatocp
 ___
 
 3.	GitLab 代码仓库
@@ -68,3 +67,7 @@ ___
 ```bash
 oc get csr -o name | xargs oc adm certificate approve
 ```
+
+在每次重启虚拟机时，都建议在所有操作系统全起来之后执行上面这个命令
+
+每次启动可能需要**15分钟**左右，耐心等待，直到集群的所有operator和集群状态正常
