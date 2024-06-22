@@ -35,6 +35,8 @@ OpenShift、Quay和Gitlab的控制台书签已在student用户的浏览器就绪
 
 1.	OpenShift 服务器
 
+**不要试图ssh和控制台登录master01，OpenShift不支持这些登录方式，你只需要用oc命令连接**
+
 > 1. 控制台URL：https://console-openshift-console.apps.ocp4.example.com
 > 2. 临时登录用户名kubeadmin
 > 3. 密码gdtpf-qvRqf-pekZF-2vABT
