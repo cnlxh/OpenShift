@@ -62,12 +62,34 @@ ___
 
 # 关于集群的开机和重启
 
-包括集群虚拟机的第一次开机以及后续的每次重启，都会生成新的客户端证书请求，如果长时间集群无法ready，可能是当次的启动证书没有自动审批。在workstation上用oc login登录OCP集群之后，执行以下命令完成证书审批即可
+包括集群虚拟机的第一次开机以及后续的每次重启，都会生成新的客户端证书请求，如果长时间集群无法ready，可能是当次的启动证书没有自动审批，执行以下命令完成证书审批即可
+
+每次启动可能需要**15分钟**左右，耐心等待，在集群启动之前，这条命令将会失败，你可以多次重试，直到可以返回数据
 
 ```bash
 oc get csr -o name | xargs oc adm certificate approve
 ```
 
-在每次重启虚拟机时，都建议在所有操作系统全起来之后执行上面这个命令
+正常输出如下：
 
-每次启动可能需要**15分钟**左右，耐心等待，直到集群的所有operator和集群状态正常
+```text
+certificatesigningrequest.certificates.k8s.io/csr-4pjtx approved
+certificatesigningrequest.certificates.k8s.io/csr-72flh approved
+certificatesigningrequest.certificates.k8s.io/csr-8brdv approved
+certificatesigningrequest.certificates.k8s.io/csr-jn4m8 approved
+certificatesigningrequest.certificates.k8s.io/csr-prn6v approved
+certificatesigningrequest.certificates.k8s.io/csr-q6h5l approved
+certificatesigningrequest.certificates.k8s.io/csr-srm27 approved
+certificatesigningrequest.certificates.k8s.io/system:openshift:openshift-authenticator-89tmt approved
+certificatesigningrequest.certificates.k8s.io/system:openshift:openshift-authenticator-n5j4r approved
+certificatesigningrequest.certificates.k8s.io/system:openshift:openshift-monitoring-f87sx approved
+certificatesigningrequest.certificates.k8s.io/system:openshift:openshift-monitoring-vr8c8 approved
+```
+
+在每次重启虚拟机时，都建议在所有操作系统全起来之后执行上面这个命令，直到集群的所有operator可用状态为True
+
+审批证书后，集群将会经过一阵繁忙的初始化操作，请耐心等待，直到执行下面的命令时，所有的集群operator都是正常
+
+```bash
+oc get co
+```
