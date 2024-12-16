@@ -158,6 +158,8 @@ yum install bind bind-utils -y
 sed -i 's/listen-on port 53 { 127.0.0.1; }/listen-on port 53 { any; }/g' /etc/named.conf
 sed -i 's/allow-query     { localhost; };/allow-query     { any; };/g' /etc/named.conf
 sed -i '/recursion yes;/a\        forward first;\n        forwarders { 114.114.114.114; };' /etc/named.conf
+sed -i 's/dnssec-validation yes;/dnssec-validation no;/' /etc/named.conf
+
 ```
 
 ```bash
