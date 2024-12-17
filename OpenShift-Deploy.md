@@ -409,7 +409,7 @@ wget -O /content/rhcos-live-rootfs.x86_64.img https://mirror.openshift.com/pub/o
 mkdir /data
 yum install podman jq -y
 wget https://mirror.openshift.com/pub/cgw/mirror-registry/latest/mirror-registry-amd64.tar.gz
-tar Cvxf /usr/local/bin mirror-registry.tar.gz
+tar Cvxf /usr/local/bin mirror-registry-amd64.tar.gz
 cat /root/.ssh/id_ed25519.pub >> .ssh/authorized_keys
 ssh-copy-id root@content.cluster1.xiaohui.cn
 mirror-registry install --initPassword lixiaohui --initUser admin \
